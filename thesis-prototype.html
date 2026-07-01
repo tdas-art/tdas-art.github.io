@@ -1,0 +1,1892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transparent Social Feed Prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* =========================
+       GLOBAL RESET + PHONE FRAME
+    ========================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      --bg: #f3f0ec;
+      --phone: #ffffff;
+      --text: #141414;
+      --muted: #737373;
+      --line: #e8e5e1;
+      --soft: #f8f6f3;
+      --dark: #151515;
+      --accent: #ef4444;
+      --blue: #2563eb;
+      --green: #16a34a;
+      --radius: 22px;
+      --transition: 300ms ease;
+      --shadow: 0 24px 70px rgba(0,0,0,0.18);
+    }
+
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at top, #fff9f2 0%, var(--bg) 48%, #e7dfd6 100%);
+      font-family: "Inter", system-ui, sans-serif;
+      color: var(--text);
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .phone-frame {
+      width: 414px;
+      height: 874px;
+      padding: 15px 12px;
+      border-radius: 52px;
+      background: linear-gradient(145deg, #1b1b1d, #040404);
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .phone-frame::before {
+      content: "";
+      position: absolute;
+      width: 128px;
+      height: 28px;
+      background: #050505;
+      border-radius: 0 0 18px 18px;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 50;
+    }
+
+    .app {
+      width: 390px;
+      height: 844px;
+      background: var(--phone);
+      border-radius: 42px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .screen {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: var(--phone);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .status-space {
+      height: 36px;
+      flex-shrink: 0;
+    }
+
+    .topbar {
+      height: 58px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: blur(14px);
+      z-index: 5;
+    }
+
+    .brand {
+      font-size: 23px;
+      font-weight: 800;
+      letter-spacing: -0.06em;
+    }
+
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+      background: #fff;
+      padding-bottom: 74px;
+    }
+
+    .content::-webkit-scrollbar,
+    .overlay-body::-webkit-scrollbar {
+      width: 0;
+    }
+
+    .bottom-nav {
+      height: 72px;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      border-top: 1px solid var(--line);
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(18px);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      z-index: 20;
+    }
+
+    .nav-btn {
+      display: grid;
+      place-items: center;
+      gap: 4px;
+      color: #8a8a8a;
+      transition: transform var(--transition), color var(--transition);
+    }
+
+    .nav-btn.active {
+      color: #111;
+      transform: translateY(-2px);
+    }
+
+    .nav-btn svg,
+    .icon-btn svg,
+    .post-action svg,
+    .small-icon {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .nav-btn span {
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #111;
+      transition: background var(--transition), transform var(--transition);
+    }
+
+    .icon-btn:active,
+    .pill:active,
+    .primary-btn:active,
+    .secondary-btn:active,
+    .topic-card:active {
+      transform: scale(0.96);
+    }
+
+    .icon-btn:hover {
+      background: #f4f4f4;
+    }
+
+    /* =========================
+       HOME FEED
+    ========================== */
+    .dashboard-pills {
+      display: flex;
+      gap: 8px;
+      padding: 12px 14px 4px;
+      position: sticky;
+      top: 0;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(16px);
+      z-index: 4;
+    }
+
+    .pill {
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 8px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #252525;
+      transition: transform var(--transition), background var(--transition), border var(--transition);
+    }
+
+    .pill:hover {
+      background: var(--soft);
+    }
+
+    .adjust-notice {
+      margin: 10px 14px 4px;
+      padding: 14px;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 18px;
+      display: none;
+      gap: 10px;
+      align-items: center;
+      animation: fadeUp var(--transition);
+    }
+
+    .adjust-notice.show {
+      display: flex;
+    }
+
+    .adjust-notice p {
+      font-size: 13px;
+      line-height: 1.35;
+      flex: 1;
+      color: #7c2d12;
+      font-weight: 600;
+    }
+
+    .tiny-btn {
+      padding: 8px 11px;
+      background: #111;
+      color: #fff;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: transform var(--transition), opacity var(--transition);
+    }
+
+    .post {
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 12px;
+      background: #fff;
+      animation: fadeUp var(--transition);
+    }
+
+    .post-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 14px;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fb923c, #ec4899, #8b5cf6);
+      flex-shrink: 0;
+    }
+
+    .avatar.large {
+      width: 76px;
+      height: 76px;
+      font-size: 22px;
+    }
+
+    .post-meta {
+      flex: 1;
+    }
+
+    .username {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .timestamp {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .post-image-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background: linear-gradient(135deg, #ffd7a8, #ff8a7a, #ad6bff);
+    }
+
+    .post-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 500ms ease;
+    }
+
+    .post:hover .post-image {
+      transform: scale(1.02);
+    }
+
+    .info-button {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(10px);
+      color: #111;
+      font-weight: 800;
+      border: 1px solid rgba(255,255,255,0.7);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+      transition: transform var(--transition), background var(--transition);
+    }
+
+    .post-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 13px 5px;
+    }
+
+    .left-actions {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .post-action {
+      width: 28px;
+      height: 28px;
+      color: #111;
+      transition: transform var(--transition), color var(--transition);
+    }
+
+    .post-action.liked {
+      color: var(--accent);
+      animation: pop 340ms ease;
+    }
+
+    .post-action.liked svg {
+      fill: currentColor;
+    }
+
+    .post-action.saved svg {
+      fill: #111;
+      animation: pop 340ms ease;
+    }
+
+    .likes {
+      padding: 0 14px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .caption {
+      padding: 5px 14px 0;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .caption strong {
+      font-weight: 800;
+    }
+
+    .content-label {
+      display: inline-flex;
+      margin: 8px 14px 0;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: #f6f3ef;
+      color: #4b4b4b;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .end-feed {
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 46px 28px 70px;
+      color: #111;
+    }
+
+    .check-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      border: 2px solid #111;
+      display: grid;
+      place-items: center;
+      margin-bottom: 14px;
+    }
+
+    .end-feed h3 {
+      font-size: 19px;
+      letter-spacing: -0.04em;
+      margin-bottom: 6px;
+    }
+
+    .end-feed p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    /* =========================
+       EXPLORE + TOPIC FEED
+    ========================== */
+    .search-wrap {
+      padding: 14px;
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 3;
+    }
+
+    .search-box {
+      height: 44px;
+      border-radius: 14px;
+      background: #f3f3f3;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      gap: 9px;
+      color: #777;
+      border: 1px solid transparent;
+      transition: border var(--transition), background var(--transition);
+    }
+
+    .search-box:focus-within {
+      border-color: #d8d8d8;
+      background: #fff;
+    }
+
+    .search-box input {
+      border: none;
+      outline: none;
+      background: transparent;
+      width: 100%;
+      font-size: 14px;
+    }
+
+    .topic-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 0 14px 90px;
+    }
+
+    .topic-card {
+      min-height: 118px;
+      border-radius: 22px;
+      padding: 15px;
+      color: #fff;
+      display: flex;
+      align-items: flex-end;
+      font-size: 19px;
+      font-weight: 850;
+      letter-spacing: -0.04em;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.11);
+      transition: transform var(--transition), filter var(--transition);
+    }
+
+    .topic-card:hover {
+      filter: saturate(1.08);
+    }
+
+    .topic-feed-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 4;
+    }
+
+    .topic-feed-header h2 {
+      font-size: 18px;
+      letter-spacing: -0.04em;
+    }
+
+    .mini-posts {
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .mini-post {
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #fff;
+      animation: slideInRight var(--transition);
+    }
+
+    .mini-thumb {
+      height: 190px;
+      background: linear-gradient(135deg, #fed7aa, #fdba74, #f472b6);
+    }
+
+    .mini-post p {
+      padding: 12px;
+      font-size: 13px;
+      color: #444;
+      font-weight: 650;
+    }
+
+    /* =========================
+       PROFILE
+    ========================== */
+    .profile-head {
+      padding: 18px 16px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .profile-info h2 {
+      font-size: 20px;
+      letter-spacing: -0.05em;
+      margin-bottom: 14px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 18px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 16px;
+      letter-spacing: -0.03em;
+    }
+
+    .stat span {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 650;
+    }
+
+    .control-cta {
+      margin: 2px 14px 16px;
+      padding: 15px 16px;
+      border-radius: 20px;
+      background: #111;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 16px 28px rgba(0,0,0,0.18);
+      transition: transform var(--transition);
+    }
+
+    .control-cta strong {
+      display: block;
+      font-size: 15px;
+      letter-spacing: -0.03em;
+    }
+
+    .control-cta span {
+      display: block;
+      opacity: 0.74;
+      font-size: 12px;
+      margin-top: 3px;
+      text-align: left;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    .profile-tile {
+      aspect-ratio: 1 / 1;
+      background: linear-gradient(135deg, #f97316, #f9a8d4, #a78bfa);
+    }
+
+    /* =========================
+       PLACEHOLDER TABS
+    ========================== */
+    .placeholder {
+      height: 100%;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .placeholder-card {
+      padding: 28px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: var(--soft);
+      animation: fadeUp var(--transition);
+    }
+
+    .placeholder-card h2 {
+      font-size: 22px;
+      letter-spacing: -0.05em;
+      margin-bottom: 8px;
+    }
+
+    .placeholder-card p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    /* =========================
+       MODALS, OVERLAYS, TOASTS
+    ========================== */
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.28);
+      backdrop-filter: blur(8px);
+      z-index: 80;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition);
+      display: grid;
+      place-items: center;
+      padding: 22px;
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      width: 100%;
+      background: #fff;
+      border-radius: 26px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.18);
+      padding: 20px;
+      transform: translateY(20px) scale(0.98);
+      opacity: 0;
+      transition: transform var(--transition), opacity var(--transition);
+    }
+
+    .modal-backdrop.active .modal-card {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    .modal-card h2 {
+      font-size: 20px;
+      letter-spacing: -0.05em;
+      margin-bottom: 14px;
+    }
+
+    .signal-list {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .signal-item {
+      padding: 13px;
+      border-radius: 16px;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      font-size: 13px;
+      line-height: 1.38;
+      font-weight: 650;
+    }
+
+    .modal-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .secondary-btn,
+    .primary-btn {
+      height: 44px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      transition: transform var(--transition), background var(--transition), opacity var(--transition);
+    }
+
+    .secondary-btn {
+      border: 1px solid #111;
+      color: #111;
+      background: #fff;
+    }
+
+    .primary-btn {
+      background: #111;
+      color: #fff;
+    }
+
+    .primary-btn:disabled {
+      background: #d1d1d1;
+      color: #777;
+      cursor: not-allowed;
+    }
+
+    .toast {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 88px;
+      background: rgba(17,17,17,0.94);
+      color: #fff;
+      padding: 13px 15px;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 750;
+      z-index: 220;
+      transform: translateY(22px);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform var(--transition), opacity var(--transition);
+      text-align: center;
+      box-shadow: 0 16px 34px rgba(0,0,0,0.22);
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .fullscreen-overlay {
+      position: absolute;
+      inset: 0;
+      background: #fff;
+      z-index: 120;
+      transform: translateX(100%);
+      transition: transform var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .fullscreen-overlay.active {
+      transform: translateX(0);
+    }
+
+    .fullscreen-overlay.backing {
+      transform: translateX(-100%);
+    }
+
+    .overlay-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px 18px 92px;
+    }
+
+    .overlay-top {
+      height: 86px;
+      padding: 36px 14px 0;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      flex-shrink: 0;
+    }
+
+    .overlay-top h2 {
+      font-size: 20px;
+      letter-spacing: -0.05em;
+      flex: 1;
+    }
+
+    .overlay-actions-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 14px 18px 22px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(18px);
+      border-top: 1px solid var(--line);
+    }
+
+    .section-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 850;
+      margin: 18px 0 9px;
+    }
+
+    .explain-card,
+    .settings-row,
+    .dashboard-card {
+      padding: 15px;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      margin-bottom: 10px;
+    }
+
+    .explain-card strong,
+    .settings-row strong,
+    .dashboard-card strong {
+      display: block;
+      font-size: 14px;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+
+    .explain-card p,
+    .settings-row p,
+    .dashboard-card p {
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.42;
+    }
+
+    .topic-pill-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .expand-pill {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 18px;
+      padding: 13px;
+      transition: background var(--transition), transform var(--transition);
+    }
+
+    .expand-pill-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .expand-content {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height var(--transition), opacity var(--transition), margin var(--transition);
+    }
+
+    .expand-pill.active .expand-content {
+      max-height: 130px;
+      opacity: 1;
+      margin-top: 10px;
+    }
+
+    .expand-content p {
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.42;
+      margin-bottom: 10px;
+    }
+
+    .reset-big-btn {
+      width: 100%;
+      margin-top: 18px;
+      height: 50px;
+      border-radius: 999px;
+      background: #111;
+      color: #fff;
+      font-weight: 850;
+      box-shadow: 0 14px 26px rgba(0,0,0,0.17);
+      transition: transform var(--transition);
+    }
+
+    .progress-wrap {
+      height: 8px;
+      background: #efefef;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 16px 0 14px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 20%;
+      background: #111;
+      border-radius: 999px;
+      transition: width var(--transition);
+    }
+
+    .reset-card {
+      height: 310px;
+      border-radius: 28px;
+      background: linear-gradient(135deg, #ffedd5, #f472b6, #8b5cf6);
+      display: grid;
+      place-items: end start;
+      padding: 18px;
+      color: #fff;
+      margin-bottom: 18px;
+      box-shadow: 0 18px 32px rgba(0,0,0,0.15);
+      transition: transform 280ms ease, opacity 280ms ease;
+    }
+
+    .reset-card h3 {
+      font-size: 23px;
+      letter-spacing: -0.06em;
+      text-shadow: 0 2px 16px rgba(0,0,0,0.22);
+    }
+
+    .reset-card.slide-no {
+      transform: translateX(-120%) rotate(-8deg);
+      opacity: 0;
+    }
+
+    .reset-card.slide-yes {
+      transform: translateX(120%) rotate(8deg);
+      opacity: 0;
+    }
+
+    .yes-no {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .choice-btn {
+      height: 58px;
+      border-radius: 18px;
+      font-size: 16px;
+      font-weight: 900;
+      transition: transform var(--transition), background var(--transition);
+    }
+
+    .choice-btn.no {
+      background: #f3f3f3;
+      color: #111;
+    }
+
+    .choice-btn.yes {
+      background: #111;
+      color: #fff;
+    }
+
+    .confirmation {
+      display: none;
+      min-height: 430px;
+      place-items: center;
+      text-align: center;
+      animation: fadeUp var(--transition);
+    }
+
+    .confirmation.show {
+      display: grid;
+    }
+
+    .confirmation h3 {
+      font-size: 24px;
+      letter-spacing: -0.06em;
+      margin: 14px 0 8px;
+    }
+
+    .confirmation p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    /* =========================
+       ONBOARDING + WELLBEING
+    ========================== */
+    .onboarding {
+      position: absolute;
+      inset: 0;
+      z-index: 180;
+      background: linear-gradient(160deg, #fff 0%, #fff7ed 58%, #f5e9ff 100%);
+      display: flex;
+      flex-direction: column;
+      transform: translateX(0);
+      transition: transform var(--transition), opacity var(--transition);
+    }
+
+    .onboarding.hidden {
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .onboard-card {
+      flex: 1;
+      padding: 78px 22px 28px;
+      display: none;
+      animation: slideInRight var(--transition);
+    }
+
+    .onboard-card.active {
+      display: block;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(0,0,0,0.06);
+      font-size: 12px;
+      font-weight: 850;
+      color: #5b4a41;
+      margin-bottom: 14px;
+    }
+
+    .onboard-card h1 {
+      font-size: 31px;
+      line-height: 1.05;
+      letter-spacing: -0.08em;
+      margin-bottom: 12px;
+    }
+
+    .onboard-card .subtext {
+      color: #5f5f5f;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .mood-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .mood-btn {
+      height: 56px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.78);
+      border: 1px solid rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 15px;
+      font-weight: 850;
+      transition: transform var(--transition), border var(--transition), background var(--transition);
+    }
+
+    .mood-btn:hover,
+    .mood-btn.selected {
+      border-color: #111;
+      background: #fff;
+      transform: translateX(4px);
+    }
+
+    .mood-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f97316, #ec4899);
+    }
+
+    .toggle-list {
+      display: grid;
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .toggle-row {
+      min-height: 62px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.78);
+      border: 1px solid rgba(0,0,0,0.08);
+      padding: 12px 13px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: space-between;
+      transition: background var(--transition), border var(--transition), transform var(--transition);
+    }
+
+    .toggle-row.active {
+      background: #fff;
+      border-color: #111;
+    }
+
+    .toggle-row span {
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+
+    .switch {
+      width: 48px;
+      height: 28px;
+      background: #d1d1d1;
+      border-radius: 999px;
+      position: relative;
+      flex-shrink: 0;
+      transition: background var(--transition);
+    }
+
+    .switch::before {
+      content: "";
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      top: 3px;
+      left: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform var(--transition);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .toggle-row.active .switch {
+      background: #111;
+    }
+
+    .toggle-row.active .switch::before {
+      transform: translateX(20px);
+    }
+
+    .full-width {
+      width: 100%;
+      height: 52px;
+      border-radius: 999px;
+      font-weight: 850;
+      margin-top: 6px;
+    }
+
+    .bar-row {
+      margin-top: 13px;
+    }
+
+    .bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: #3d3d3d;
+    }
+
+    .bar-track {
+      height: 9px;
+      border-radius: 999px;
+      background: #ededed;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #f97316, #ec4899);
+      transition: width var(--transition);
+    }
+
+    .adjusting {
+      position: absolute;
+      inset: 0;
+      z-index: 160;
+      background: rgba(255,255,255,0.74);
+      backdrop-filter: blur(10px);
+      display: none;
+      place-items: center;
+      text-align: center;
+    }
+
+    .adjusting.show {
+      display: grid;
+    }
+
+    .loader {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 3px solid #ddd;
+      border-top-color: #111;
+      animation: spin 800ms linear infinite;
+      margin: 0 auto 12px;
+    }
+
+    /* =========================
+       SETTINGS
+    ========================== */
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-align: left;
+      width: 100%;
+      transition: transform var(--transition), background var(--transition);
+    }
+
+    .settings-row:hover {
+      background: #fff;
+    }
+
+    .explanation-screen {
+      animation: slideInRight var(--transition);
+    }
+
+    /* =========================
+       ANIMATIONS
+    ========================== */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(24px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes pop {
+      0% { transform: scale(1); }
+      45% { transform: scale(1.28); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-frame">
+    <main class="app" id="app">
+      <!-- Core app shell renders here -->
+    </main>
+  </div>
+
+  <script>
+    /* =========================
+       DATA + STATE
+    ========================== */
+    const app = document.getElementById('app');
+
+    const icons = {
+      home: '<svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.8V21h5v-6h4v6h5V9.8"></path></svg>',
+      search: '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4.3-4.3"></path></svg>',
+      reels: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="4"></rect><path d="m8 4 3 5"></path><path d="m14 4 3 5"></path><path d="M10 13.5v4l4-2z"></path></svg>',
+      bell: '<svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"></path><path d="M10 20a2 2 0 0 0 4 0"></path></svg>',
+      profile: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 14.5-4 16 0"></path></svg>',
+      heart: '<svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"></path></svg>',
+      comment: '<svg viewBox="0 0 24 24"><path d="M21 12a8.5 8.5 0 0 1-9 8.4 9.5 9.5 0 0 1-4-.9L3 21l1.5-4.2A8.2 8.2 0 0 1 3 12a9 9 0 0 1 18 0z"></path></svg>',
+      share: '<svg viewBox="0 0 24 24"><path d="M22 2 11 13"></path><path d="m22 2-7 20-4-9-9-4z"></path></svg>',
+      save: '<svg viewBox="0 0 24 24"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"></path></svg>',
+      gear: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1A2 2 0 1 1 4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1A2 2 0 1 1 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3h.1a1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1A2 2 0 1 1 19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9v.1a1.7 1.7 0 0 0 1.6 1h.1a2 2 0 1 1 0 4H21a1.7 1.7 0 0 0-1.6 1z"></path></svg>',
+      back: '<svg viewBox="0 0 24 24"><path d="M15 18 9 12l6-6"></path></svg>',
+      check: '<svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"></path></svg>',
+      chevron: '<svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg>'
+    };
+
+    const imageUrls = [
+      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80',
+      'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&q=80',
+      'https://images.unsplash.com/photo-1493770348161-369560ae357d?w=400&q=80',
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80',
+      'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400&q=80'
+    ];
+
+    const basePosts = [
+      { user: 'slowdesign', initials: 'SD', time: '12m', img: imageUrls[1], caption: 'A softer corner for thinking, reading, and remembering your brain is not a browser with 47 tabs.', label: 'Design', likes: 248 },
+      { user: 'earthnotes', initials: 'EN', time: '24m', img: imageUrls[0], caption: 'Morning light, quiet trails, and a reminder that your nervous system enjoys non-digital pixels.', label: 'Nature', likes: 591 },
+      { user: 'tableandtime', initials: 'TT', time: '1h', img: imageUrls[2], caption: 'Today’s small reset: warm food, slow pacing, and no pretending iced coffee is a full personality.', label: 'Wellness', likes: 419 },
+      { user: 'studiofield', initials: 'SF', time: '2h', img: imageUrls[3], caption: 'Color studies for attention, mood, and the tiny drama of visual hierarchy.', label: 'Art', likes: 187 },
+      { user: 'urbanrituals', initials: 'UR', time: '3h', img: imageUrls[4], caption: 'A good table, a better notebook, and exactly enough caffeine to romanticize admin work.', label: 'Lifestyle', likes: 326 }
+    ];
+
+    const moodPostMap = {
+      Energised: ['Active design sprint', 'Bold creative reset', 'Bright city walk', 'Momentum post', 'Make something now'],
+      Good: ['Balanced design cue', 'Creative inspiration', 'Wellness moment', 'Community post', 'Slow lifestyle'],
+      Neutral: ['Balanced design cue', 'Nature pause', 'Food and care', 'Art study', 'Everyday rhythm'],
+      Tired: ['Low-stimulation design', 'Quiet landscape', 'Comfort food', 'Soft color study', 'Gentle routine'],
+      Overwhelmed: ['Calm visual break', 'Quiet nature post', 'Light wellness cue', 'Soft art study', 'Low-intensity lifestyle']
+    };
+
+    const topics = ['Design', 'Wellness', 'Travel', 'Food', 'Art', 'Technology', 'Music', 'Film'];
+    const topicGradients = [
+      'linear-gradient(135deg,#fb923c,#ec4899)',
+      'linear-gradient(135deg,#22c55e,#14b8a6)',
+      'linear-gradient(135deg,#38bdf8,#6366f1)',
+      'linear-gradient(135deg,#f59e0b,#ef4444)',
+      'linear-gradient(135deg,#a855f7,#ec4899)',
+      'linear-gradient(135deg,#0f172a,#2563eb)',
+      'linear-gradient(135deg,#f43f5e,#8b5cf6)',
+      'linear-gradient(135deg,#111827,#f97316)'
+    ];
+
+    let state = {
+      activeTab: 'home',
+      onboarded: false,
+      mood: 'Neutral',
+      intentions: { inspired: false, connect: false, windDown: false, learn: false },
+      liked: {},
+      saved: {},
+      posts: [...basePosts],
+      selectedTopic: null,
+      controlScreen: 1,
+      resetIndex: 0,
+      settingsOpen: false,
+      explanationOpen: false
+    };
+
+    /* =========================
+       RENDER SHELL
+    ========================== */
+    function renderApp() {
+      app.innerHTML = `
+        <section class="screen">
+          <div class="status-space"></div>
+          ${renderTopbar()}
+          <div class="content" id="contentArea">${renderActiveTab()}</div>
+          ${renderBottomNav()}
+          ${renderWhyModal()}
+          ${renderOnboarding()}
+          ${renderControlCenter()}
+          ${renderSettingsOverlay()}
+          ${renderDashboardOverlay()}
+          <div class="adjusting" id="adjusting"><div><div class="loader"></div><strong>Adjusting your feed...</strong></div></div>
+          <div class="toast" id="toast"></div>
+        </section>
+      `;
+      bindEvents();
+    }
+
+    function renderTopbar() {
+      const title = state.activeTab === 'home' ? '<div class="brand">social.camera</div>' : `<div class="brand">${tabTitle()}</div>`;
+      const gear = state.activeTab === 'home' ? `<button class="icon-btn" data-action="open-settings" aria-label="Open settings">${icons.gear}</button>` : `<button class="icon-btn" data-action="coming" aria-label="More options">${icons.gear}</button>`;
+      return `<header class="topbar">${title}${gear}</header>`;
+    }
+
+    function tabTitle() {
+      return ({ explore: 'Explore', reels: 'Reels', notifications: 'Activity', profile: 'user_one' })[state.activeTab] || 'social.camera';
+    }
+
+    function renderBottomNav() {
+      const tabs = [
+        ['home', icons.home, 'Home'],
+        ['explore', icons.search, 'Search'],
+        ['reels', icons.reels, 'Reels'],
+        ['notifications', icons.bell, 'Alerts'],
+        ['profile', icons.profile, 'Profile']
+      ];
+      return `<nav class="bottom-nav">${tabs.map(([id, icon, label]) => `
+        <button class="nav-btn ${state.activeTab === id ? 'active' : ''}" data-tab="${id}" aria-label="${label}">${icon}<span>${label}</span></button>
+      `).join('')}</nav>`;
+    }
+
+    function renderActiveTab() {
+      if (state.activeTab === 'home') return renderHome();
+      if (state.activeTab === 'explore') return state.selectedTopic ? renderTopicFeed(state.selectedTopic) : renderExplore();
+      if (state.activeTab === 'reels') return renderPlaceholder('Reels coming soon', 'This screen is intentionally left as a placeholder for the thesis demo.');
+      if (state.activeTab === 'notifications') return renderPlaceholder('Notifications coming soon', 'Activity controls would appear here in a fuller prototype.');
+      if (state.activeTab === 'profile') return renderProfile();
+    }
+
+    /* =========================
+       HOME
+    ========================== */
+    function renderHome() {
+      return `
+        <div class="dashboard-pills">
+          <button class="pill" data-dashboard="mood">Mood: ${state.mood}</button>
+          <button class="pill" data-dashboard="feed">Feed: Balanced</button>
+        </div>
+        <div class="adjust-notice ${state.mood === 'Overwhelmed' ? 'show' : ''}" id="overwhelmNotice">
+          <p>Your feed has been high-intensity today. Want to adjust?</p>
+          <button class="tiny-btn" data-action="adjust-feed">Adjust</button>
+        </div>
+        <div id="feedList">${state.posts.map(renderPost).join('')}</div>
+        <section class="end-feed">
+          <div class="check-icon">${icons.check}</div>
+          <h3>You're all caught up</h3>
+          <p>Come back later — your feed will update in a few hours</p>
+        </section>
+      `;
+    }
+
+    function renderPost(post, index) {
+      const liked = state.liked[index];
+      const saved = state.saved[index];
+      const dynamicLabel = moodPostMap[state.mood]?.[index] || post.label;
+      const likes = post.likes + (liked ? 1 : 0);
+      return `
+        <article class="post">
+          <div class="post-header">
+            <div class="avatar">${post.initials}</div>
+            <div class="post-meta"><div class="username">${post.user}</div><div class="timestamp">${post.time} · ${dynamicLabel}</div></div>
+            <button class="icon-btn" data-action="coming" aria-label="More post options"><svg viewBox="0 0 24 24"><path d="M12 12h.01"></path><path d="M19 12h.01"></path><path d="M5 12h.01"></path></svg></button>
+          </div>
+          <div class="post-image-wrap">
+            <img class="post-image" src="${post.img}" alt="${post.label} post image" loading="lazy">
+            <button class="info-button" data-action="why" aria-label="Why you are seeing this post">i</button>
+          </div>
+          <div class="post-actions">
+            <div class="left-actions">
+              <button class="post-action ${liked ? 'liked' : ''}" data-like="${index}" aria-label="Like post">${icons.heart}</button>
+              <button class="post-action" data-action="coming" aria-label="Comment">${icons.comment}</button>
+              <button class="post-action" data-action="coming" aria-label="Share">${icons.share}</button>
+            </div>
+            <button class="post-action ${saved ? 'saved' : ''}" data-save="${index}" aria-label="Save post">${icons.save}</button>
+          </div>
+          <div class="likes">${likes.toLocaleString()} likes</div>
+          <p class="caption"><strong>${post.user}</strong> ${post.caption}</p>
+          <span class="content-label">${dynamicLabel}</span>
+        </article>
+      `;
+    }
+
+    /* =========================
+       EXPLORE
+    ========================== */
+    function renderExplore() {
+      return `
+        <div class="search-wrap">
+          <label class="search-box">${icons.search}<input type="text" placeholder="Search topics, accounts, ideas" /></label>
+        </div>
+        <section class="topic-grid">
+          ${topics.map((topic, i) => `<button class="topic-card" data-topic="${topic}" style="background:${topicGradients[i]}">${topic}</button>`).join('')}
+        </section>
+      `;
+    }
+
+    function renderTopicFeed(topic) {
+      return `
+        <div class="topic-feed-header">
+          <button class="icon-btn" data-action="topic-back">${icons.back}</button>
+          <h2>${topic}</h2>
+        </div>
+        <section class="mini-posts">
+          ${[1,2,3].map((_, i) => `
+            <article class="mini-post">
+              <div class="mini-thumb" style="background:${topicGradients[(topics.indexOf(topic)+i)%topicGradients.length]}"></div>
+              <p>#${topic} · A sample post showing how topic exploration could branch from the main feed.</p>
+            </article>
+          `).join('')}
+        </section>
+      `;
+    }
+
+    /* =========================
+       PROFILE
+    ========================== */
+    function renderProfile() {
+      return `
+        <section class="profile-head">
+          <div class="avatar large">UO</div>
+          <div class="profile-info">
+            <h2>user_one</h2>
+            <div class="stats">
+              <div class="stat"><strong>42</strong><span>Posts</span></div>
+              <div class="stat"><strong>1.8k</strong><span>Followers</span></div>
+              <div class="stat"><strong>385</strong><span>Following</span></div>
+            </div>
+          </div>
+        </section>
+        <button class="control-cta" data-action="open-control">
+          <span><strong>Feed Control Center</strong><span>See and reset the signals shaping your feed.</span></span>
+          ${icons.chevron}
+        </button>
+        <section class="profile-grid">
+          ${Array.from({length:6}).map((_,i)=>`<div class="profile-tile" style="background:${topicGradients[i % topicGradients.length]}"></div>`).join('')}
+        </section>
+      `;
+    }
+
+    function renderPlaceholder(title, text) {
+      return `<section class="placeholder"><div class="placeholder-card"><h2>${title}</h2><p>${text}</p></div></section>`;
+    }
+
+    /* =========================
+       WHY MODAL
+    ========================== */
+    function renderWhyModal() {
+      return `
+        <div class="modal-backdrop" id="whyModal">
+          <div class="modal-card">
+            <h2>Why you're seeing this post</h2>
+            <div class="signal-list">
+              <div class="signal-item">You saved 3 posts from this account this week</div>
+              <div class="signal-item">You've watched similar content for 4+ minutes today</div>
+              <div class="signal-item">This topic makes up 34% of your current feed</div>
+            </div>
+            <div class="modal-actions">
+              <button class="secondary-btn" data-action="see-less">See less of this</button>
+              <button class="primary-btn" data-action="close-why">Close</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    /* =========================
+       ONBOARDING
+    ========================== */
+    function renderOnboarding() {
+      return `
+        <section class="onboarding ${state.onboarded ? 'hidden' : ''}" id="onboarding">
+          <div class="onboard-card active" data-onboard-step="1">
+            <span class="eyebrow">Well-being dashboard</span>
+            <h1>How are you feeling right now?</h1>
+            <p class="subtext">Your answer helps the prototype show how feeds could respond to emotional context without hiding the logic.</p>
+            <div class="mood-grid">
+              ${['Energised','Good','Neutral','Tired','Overwhelmed'].map((m,i)=>`<button class="mood-btn ${state.mood===m?'selected':''}" data-mood="${m}"><span>${m}</span><span class="mood-dot" style="background:${topicGradients[i]}"></span></button>`).join('')}
+            </div>
+          </div>
+          <div class="onboard-card" data-onboard-step="2">
+            <span class="eyebrow">Set intention</span>
+            <h1>Before we show you your feed, tell us what matters to you today</h1>
+            <p class="subtext">Wellbeing means something different to everyone. You define it.</p>
+            <div class="toggle-list">
+              ${renderToggle('inspired', 'I want to feel inspired')}
+              ${renderToggle('connect', 'I want to connect with people I know')}
+              ${renderToggle('windDown', 'I want to wind down')}
+              ${renderToggle('learn', 'I want to learn something new')}
+            </div>
+            <button class="primary-btn full-width" data-action="finish-onboard" ${hasIntention() ? '' : 'disabled'}>Set my feed intention</button>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderToggle(key, label) {
+      return `<button class="toggle-row ${state.intentions[key] ? 'active' : ''}" data-toggle="${key}"><span>${label}</span><span class="switch"></span></button>`;
+    }
+
+    function hasIntention() {
+      return Object.values(state.intentions).some(Boolean);
+    }
+
+    /* =========================
+       CONTROL CENTER
+    ========================== */
+    function renderControlCenter() {
+      return `
+        <section class="fullscreen-overlay" id="controlOverlay">
+          <div class="overlay-top">
+            <button class="icon-btn" data-action="close-control">${icons.back}</button>
+            <h2>${state.controlScreen === 1 ? 'Feed Control Center' : 'Reset Your Feed'}</h2>
+          </div>
+          <div class="overlay-body" id="controlBody">${state.controlScreen === 1 ? renderControlScreenOne() : renderResetScreen()}</div>
+          <div class="overlay-actions-bottom">
+            <button class="secondary-btn" data-action="control-back">Back</button>
+            <button class="primary-btn" data-action="control-next">${state.controlScreen === 1 ? 'Next' : 'Done'}</button>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderControlScreenOne() {
+      const signals = [
+        ['Interactions', 'Posts you liked, saved, or commented on in the last 7 days'],
+        ['Viewing patterns', 'Content you paused on or watched for more than 5 seconds'],
+        ['Time spent', "Topics you've spent the most total time viewing this week"]
+      ];
+      const topicExplanations = {
+        Art: "You've engaged with 14 art posts this week, mostly illustration and photography",
+        Design: 'Your most viewed topic. 34% of your current feed is design-related content',
+        'Self-care': 'You saved 3 self-care posts this week and follow 6 accounts in this space',
+        News: "You've viewed news content 8 times this week, mostly in the morning"
+      };
+      return `
+        <p class="dashboard-card"><strong>See the signals currently shaping your feed, then reset the system through direct choices.</strong></p>
+        <div class="section-title">Current feed signals</div>
+        ${signals.map(([name, text]) => `<div class="explain-card"><strong>${name}</strong><p>${text}</p></div>`).join('')}
+        <div class="section-title">Current topics</div>
+        <div class="topic-pill-list">
+          ${Object.entries(topicExplanations).map(([topic, text]) => `
+            <div class="expand-pill" data-expand-topic="${topic}">
+              <div class="expand-pill-header"><span>${topic}</span><span>+</span></div>
+              <div class="expand-content"><p>${text}</p><button class="tiny-btn" data-see-topic="${topic}">See less</button></div>
+            </div>
+          `).join('')}
+        </div>
+        <button class="reset-big-btn" data-action="start-reset">Reset My Feed</button>
+      `;
+    }
+
+    function renderResetScreen() {
+      const resetTopics = ['Design inspiration', 'Wellness cue', 'News analysis', 'Friend update', 'Entertainment clip'];
+      if (state.resetIndex >= 5) {
+        return `<div class="confirmation show"><div><div class="check-icon" style="margin:auto">${icons.check}</div><h3>Your feed has been updated based on your choices</h3><p>The system now has fresher, more direct signals from you.</p></div></div>`;
+      }
+      return `
+        <div class="progress-wrap"><div class="progress-fill" style="width:${((state.resetIndex + 1) / 5) * 100}%"></div></div>
+        <p class="timestamp" style="text-align:center;margin-bottom:16px;">${state.resetIndex + 1} of 5 posts</p>
+        <div class="reset-card" id="resetCard" style="background:${topicGradients[state.resetIndex % topicGradients.length]}"><h3>${resetTopics[state.resetIndex]}</h3></div>
+        <h2 style="font-size:21px;letter-spacing:-.05em;text-align:center;">Do you want to see more of this?</h2>
+        <div class="yes-no">
+          <button class="choice-btn no" data-reset-choice="no">NO</button>
+          <button class="choice-btn yes" data-reset-choice="yes">YES</button>
+        </div>
+      `;
+    }
+
+    /* =========================
+       SETTINGS + DASHBOARD DETAILS
+    ========================== */
+    function renderSettingsOverlay() {
+      return `
+        <section class="fullscreen-overlay" id="settingsOverlay">
+          <div class="overlay-top">
+            <button class="icon-btn" data-action="close-settings">${icons.back}</button>
+            <h2>Settings</h2>
+          </div>
+          <div class="overlay-body" id="settingsBody">${state.explanationOpen ? renderTransparencyExplanation() : renderSettingsHome()}</div>
+        </section>
+      `;
+    }
+
+    function renderSettingsHome() {
+      return `
+        <div class="section-title">Account</div>
+        <button class="settings-row" data-action="settings-control"><span><strong>Feed Control Center</strong><p>View and reset your feed signals.</p></span>${icons.chevron}</button>
+        <button class="settings-row" data-action="restart-onboarding"><span><strong>Well-being Dashboard</strong><p>Restart mood check-in and feed intention setup.</p></span>${icons.chevron}</button>
+        <button class="settings-row" data-action="coming"><span><strong>Notification preferences</strong><p>Choose what gets your attention.</p></span>${icons.chevron}</button>
+        <div class="section-title">Transparency</div>
+        <button class="settings-row" data-action="transparency"><span><strong>Why you see what you see</strong><p>Learn how feed signals work.</p></span>${icons.chevron}</button>
+        <button class="settings-row" data-action="coming"><span><strong>Download your data</strong><p>Export your account and feed activity.</p></span>${icons.chevron}</button>
+        <div class="section-title">About this feature</div>
+        <div class="dashboard-card"><p>This app is a research prototype designed to demonstrate what transparent, user-controlled social media could look like. Built as part of an MDes thesis on designing for agency in the attention economy.</p></div>
+      `;
+    }
+
+    function renderTransparencyExplanation() {
+      return `
+        <div class="explanation-screen">
+          <button class="secondary-btn" style="width:100%;margin-bottom:14px;" data-action="settings-home">Back to settings</button>
+          <div class="dashboard-card"><strong>Why you see what you see</strong><p>Your feed is shaped by three types of signals: your interactions, your viewing patterns, and your time spent. You can see and change all of these in your Feed Control Center.</p></div>
+        </div>
+      `;
+    }
+
+    function renderDashboardOverlay() {
+      return `
+        <div class="modal-backdrop" id="dashboardModal">
+          <div class="modal-card" id="dashboardCard"></div>
+        </div>
+      `;
+    }
+
+    /* =========================
+       EVENTS
+    ========================== */
+    function bindEvents() {
+      document.querySelectorAll('[data-tab]').forEach(btn => btn.addEventListener('click', () => {
+        state.activeTab = btn.dataset.tab;
+        state.selectedTopic = null;
+        renderApp();
+      }));
+
+      document.querySelectorAll('[data-action]').forEach(btn => btn.addEventListener('click', handleAction));
+
+      document.querySelectorAll('[data-like]').forEach(btn => btn.addEventListener('click', () => {
+        const i = btn.dataset.like;
+        state.liked[i] = !state.liked[i];
+        rerenderContentOnly();
+      }));
+
+      document.querySelectorAll('[data-save]').forEach(btn => btn.addEventListener('click', () => {
+        const i = btn.dataset.save;
+        state.saved[i] = !state.saved[i];
+        rerenderContentOnly();
+        if (state.saved[i]) showToast('Saved to your collection');
+      }));
+
+      document.querySelectorAll('[data-topic]').forEach(btn => btn.addEventListener('click', () => {
+        state.selectedTopic = btn.dataset.topic;
+        rerenderContentOnly();
+      }));
+
+      document.querySelectorAll('[data-mood]').forEach(btn => btn.addEventListener('click', () => {
+        state.mood = btn.dataset.mood;
+        showOnboardStep(2);
+      }));
+
+      document.querySelectorAll('[data-toggle]').forEach(btn => btn.addEventListener('click', () => {
+        const key = btn.dataset.toggle;
+        state.intentions[key] = !state.intentions[key];
+        renderApp();
+        showOnboardStep(2);
+      }));
+
+      document.querySelectorAll('[data-dashboard]').forEach(btn => btn.addEventListener('click', () => openDashboard(btn.dataset.dashboard)));
+
+      document.querySelectorAll('[data-expand-topic]').forEach(item => item.addEventListener('click', (e) => {
+        if (e.target.closest('[data-see-topic]')) return;
+        item.classList.toggle('active');
+      }));
+
+      document.querySelectorAll('[data-see-topic]').forEach(btn => btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showToast(`Got it — we'll reduce ${btn.dataset.seeTopic} in your feed`);
+      }));
+
+      document.querySelectorAll('[data-reset-choice]').forEach(btn => btn.addEventListener('click', () => resetChoice(btn.dataset.resetChoice)));
+    }
+
+    function handleAction(e) {
+      const action = e.currentTarget.dataset.action;
+      if (action === 'why') document.getElementById('whyModal').classList.add('active');
+      if (action === 'close-why') document.getElementById('whyModal').classList.remove('active');
+      if (action === 'see-less') {
+        document.getElementById('whyModal').classList.remove('active');
+        showToast("Got it — we'll show you less of this");
+      }
+      if (action === 'coming') showToast('Coming soon');
+      if (action === 'topic-back') { state.selectedTopic = null; rerenderContentOnly(); }
+      if (action === 'adjust-feed') adjustFeed();
+      if (action === 'finish-onboard' && hasIntention()) finishOnboarding();
+      if (action === 'open-control') openControl();
+      if (action === 'close-control') closeControl();
+      if (action === 'control-next') controlNext();
+      if (action === 'control-back') controlBack();
+      if (action === 'start-reset') { state.controlScreen = 2; state.resetIndex = 0; renderApp(); openControl(); }
+      if (action === 'open-settings') openSettings();
+      if (action === 'close-settings') closeSettings();
+      if (action === 'settings-control') { closeSettings(); setTimeout(openControl, 300); }
+      if (action === 'restart-onboarding') restartOnboarding();
+      if (action === 'transparency') { state.explanationOpen = true; renderApp(); openSettings(); }
+      if (action === 'settings-home') { state.explanationOpen = false; renderApp(); openSettings(); }
+    }
+
+    function rerenderContentOnly() {
+      const content = document.getElementById('contentArea');
+      if (content) {
+        content.innerHTML = renderActiveTab();
+        bindEvents();
+      }
+    }
+
+    /* =========================
+       INTERACTION HELPERS
+    ========================== */
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1900);
+    }
+
+    function showOnboardStep(step) {
+      document.querySelectorAll('[data-onboard-step]').forEach(card => card.classList.toggle('active', card.dataset.onboardStep == step));
+    }
+
+    function finishOnboarding() {
+      state.onboarded = true;
+      if (state.mood === 'Energised') state.posts = [basePosts[3], basePosts[1], basePosts[4], basePosts[0], basePosts[2]];
+      if (state.mood === 'Overwhelmed') state.posts = [basePosts[1], basePosts[2], basePosts[0], basePosts[3], basePosts[4]];
+      document.getElementById('onboarding').classList.add('hidden');
+      setTimeout(() => renderApp(), 320);
+    }
+
+    function adjustFeed() {
+      const loader = document.getElementById('adjusting');
+      loader.classList.add('show');
+      setTimeout(() => {
+        state.posts = [basePosts[1], basePosts[2], basePosts[0], basePosts[4], basePosts[3]];
+        state.mood = state.mood === 'Overwhelmed' ? 'Neutral' : state.mood;
+        renderApp();
+        showToast('Feed adjusted for lighter content');
+      }, 900);
+    }
+
+    function openDashboard(type) {
+      const card = document.getElementById('dashboardCard');
+      if (type === 'mood') {
+        card.innerHTML = `<h2>Emotional wellbeing</h2><div class="dashboard-card"><strong>Chosen mood: ${state.mood}</strong><p>Your feed has been adjusted to match your intention.</p></div><button class="primary-btn full-width" data-action="dash-close">Close</button>`;
+      } else {
+        card.innerHTML = `<h2>Feed pattern</h2>
+          ${bar('Emotionally charged', 60)}${bar('Friends and Connections', 15)}${bar('Entertainment', 35)}
+          <div class="dashboard-card" style="margin-top:14px;"><p>Your feed has been high-intensity today. Want to adjust?</p><button class="tiny-btn" style="margin-top:10px;" data-action="dash-adjust">Adjust</button></div>
+          <button class="primary-btn full-width" data-action="dash-close">Close</button>`;
+      }
+      document.getElementById('dashboardModal').classList.add('active');
+      card.querySelectorAll('[data-action]').forEach(btn => btn.addEventListener('click', () => {
+        if (btn.dataset.action === 'dash-close') document.getElementById('dashboardModal').classList.remove('active');
+        if (btn.dataset.action === 'dash-adjust') {
+          document.getElementById('dashboardModal').classList.remove('active');
+          adjustFeed();
+        }
+      }));
+    }
+
+    function bar(label, percent) {
+      const barColors = {
+        'Emotionally charged': '#E53935',
+        'Friends and Connections': '#43A047',
+        'Entertainment': '#8E24AA'
+      };
+      return `<div class="bar-row"><div class="bar-label"><span>${label}</span><span>${percent}%</span></div><div class="bar-track"><div class="bar-fill" style="width:${percent}%; background:${barColors[label] || '#111'}"></div></div></div>`;
+    }
+
+    function openControl() {
+      document.getElementById('controlOverlay').classList.add('active');
+    }
+
+    function closeControl() {
+      document.getElementById('controlOverlay').classList.remove('active');
+    }
+
+    function controlNext() {
+      if (state.controlScreen === 1) {
+        state.controlScreen = 2;
+        state.resetIndex = 0;
+        renderApp();
+        openControl();
+      } else {
+        closeControl();
+        showToast('Feed preferences saved');
+      }
+    }
+
+    function controlBack() {
+      if (state.controlScreen === 2) {
+        state.controlScreen = 1;
+        renderApp();
+        openControl();
+      } else {
+        closeControl();
+      }
+    }
+
+    function resetChoice(choice) {
+      const card = document.getElementById('resetCard');
+      card.classList.add(choice === 'yes' ? 'slide-yes' : 'slide-no');
+      setTimeout(() => {
+        state.resetIndex++;
+        const body = document.getElementById('controlBody');
+        body.innerHTML = renderResetScreen();
+        bindEvents();
+      }, 280);
+    }
+
+    function openSettings() {
+      document.getElementById('settingsOverlay').classList.add('active');
+    }
+
+    function closeSettings() {
+      state.explanationOpen = false;
+      const overlay = document.getElementById('settingsOverlay');
+      overlay.classList.remove('active');
+    }
+
+    function restartOnboarding() {
+      state.onboarded = false;
+      state.explanationOpen = false;
+      renderApp();
+      showOnboardStep(1);
+      showToast('Well-being dashboard restarted');
+    }
+
+    renderApp();
+  </script>
+</body>
+</html>
