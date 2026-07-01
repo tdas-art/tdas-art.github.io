@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Awareness Is Not Enough — Taarini Das</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--pad:clamp(20px,4vw,64px);}
+html{scroll-behavior:smooth;}
+body{background:#F9F5F0;font-family:'DM Sans',sans-serif;color:#2C2C2C;-webkit-font-smoothing:antialiased;}
+nav{background:#F9F5F0;border-bottom:0.5px solid #E8E0D6;position:sticky;top:0;z-index:100;}
+.nav-inner{padding:20px var(--pad);display:flex;justify-content:space-between;align-items:center;}
+.nav-logo{font-family:'Lora',serif;font-size:17px;font-weight:600;color:#2C2C2C;text-decoration:none;}
+.nav-links{display:flex;gap:36px;list-style:none;}
+.nav-links a{font-size:12px;letter-spacing:0.8px;text-transform:uppercase;color:#8B7355;text-decoration:none;}
+.nav-links a.active{color:#2C2C2C;border-bottom:1.5px solid #6B2737;padding-bottom:2px;}
+.nav-toggle{display:none;background:none;border:none;cursor:pointer;font-size:22px;color:#2C2C2C;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#8B7355;text-decoration:none;padding:24px var(--pad) 0;}
+.header{background:#111111;padding:56px var(--pad) 64px;overflow:hidden;position:relative;}
+.eyebrow{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#D99E61;margin-bottom:32px;position:relative;}
+.awareness-text{font-family:'Lora',serif;font-size:clamp(48px,9vw,110px);font-weight:600;color:transparent;-webkit-text-stroke:1.5px rgba(249,245,240,0.4);line-height:1;letter-spacing:-2px;display:inline-block;position:relative;}
+.strike-line-static{position:absolute;top:50%;left:-4px;height:3px;background:#D99E61;width:calc(100% + 8px);transform:translateY(-50%);}
+.awareness-wrap{position:relative;display:inline-block;margin-bottom:12px;}
+.is-not-enough{font-family:'Lora',serif;font-size:clamp(28px,4.5vw,50px);font-weight:500;color:#F9F5F0;line-height:1.1;margin-bottom:28px;}
+.is-not-enough em{font-style:italic;color:#D99E61;}
+.h-hook{font-family:'Lora',serif;font-style:italic;font-size:18px;color:#D3D1C7;max-width:600px;line-height:1.6;}
+.content{padding:64px var(--pad);max-width:900px;}
+.content p{font-size:16px;line-height:1.75;color:#3d3d3a;margin-bottom:20px;}
+.section-title{font-family:'Lora',serif;font-size:26px;font-weight:500;color:#2C2C2C;margin:48px 0 16px;}
+.section-title:first-of-type{margin-top:0;}
+.draft-box{border:1.5px dashed #6B2737;border-radius:12px;padding:28px 32px;margin:12px 0 8px;background:#F9F0F2;}
+.draft-tag{display:inline-block;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#6B2737;font-weight:600;background:rgba(107,39,55,0.1);padding:4px 10px;border-radius:20px;margin-bottom:12px;}
+.draft-box p{font-size:14px;font-style:italic;color:#8B7355;margin:0;line-height:1.6;}
+footer{background:#2C2C2C;padding:64px var(--pad) 48px;}
+.footer-label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#8B7355;margin-bottom:18px;}
+.footer-h2{font-family:'Lora',serif;font-size:34px;font-weight:500;color:#F9F5F0;line-height:1.3;margin-bottom:14px;max-width:520px;}
+.footer-sub{font-family:'Lora',serif;font-style:italic;font-size:15px;color:#D9A8B3;margin-bottom:32px;}
+.footer-email{font-size:15px;color:#D99E61;display:flex;align-items:center;gap:8px;text-decoration:none;}
+.footer-bottom{border-top:0.5px solid #3d3d3d;margin-top:48px;padding-top:20px;display:flex;justify-content:space-between;font-size:12px;color:#5a554e;}
+@media (max-width:768px){
+.nav-links{display:none;flex-direction:column;gap:16px;position:absolute;top:58px;left:0;right:0;background:#F9F5F0;padding:24px;border-bottom:0.5px solid #E8E0D6;z-index:99;}
+.nav-links.open{display:flex;}
+.nav-toggle{display:block;}
+.footer-h2{font-size:26px;}
+}
+</style>
+</head>
+<body>
+<nav>
+<div class="nav-inner">
+<a href="index.html" class="nav-logo">TAARINI DAS</a>
+<button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle navigation">&#9776;</button>
+<ul class="nav-links">
+<li><a href="index.html" class="active">Work</a></li>
+<li><a href="craft.html">The day job stuff</a></li>
+<li><a href="about.html">About</a></li>
+<li><a href="mailto:tara.taarini2307@gmail.com">Contact</a></li>
+</ul>
+</div>
+</nav>
+<a href="index.html" class="back-link"><i class="ti ti-arrow-left"></i> Back to work</a>
+<header class="header">
+<p class="eyebrow">Thesis · Design research</p>
+<div class="awareness-wrap">
+<span class="awareness-text">AWARENESS</span>
+<div class="strike-line-static"></div>
+</div>
+<h1 class="is-not-enough">Is Not <em>Enough.</em></h1>
+<p class="h-hook">Algorithms are designed to keep you hooked. I spent a year figuring out how to unhook — and what design owes us once we do.</p>
+</header>
+<div class="content">
+<h2 class="section-title">The question</h2>
+<p>I looked at how algorithms are designed to keep us hooked, and how we actually unhook ourselves — not just from the apps, but from the anxiety they leave behind. Awareness of the problem was never the hard part. Everyone already knows their phone is designed to be addictive. The real question was what happens after you know that, and whether design has any responsibility once it does.</p>
+
+<h2 class="section-title">Research approach</h2>
+<div class="draft-box">
+<span class="draft-tag">Needs your input</span>
+<p>Add the specifics here: what methods did you use (interviews, surveys, literature review, autoethnography)? How many people, if any, were involved? What sources or frameworks grounded the research? I don't have these details from our conversation, so I've left this as a placeholder rather than guess.</p>
+</div>
+
+<h2 class="section-title">What I found</h2>
+<div class="draft-box">
+<span class="draft-tag">Needs your input</span>
+<p>Add your key findings here — the specific insights that moved you from "algorithms are addictive" (already known) to your actual contribution.</p>
+</div>
+
+<h2 class="section-title">What I designed</h2>
+<div class="draft-box">
+<span class="draft-tag">Needs your input</span>
+<p>Add the concrete design response — what did the thesis actually produce? A framework, a prototype, a set of principles, a written argument?</p>
+</div>
+
+<h2 class="section-title">Why it matters</h2>
+<p>This is the other half of the argument I make in my MONUM case study. That project is about getting people to pay attention to something worth their attention. This one is about what happens after attention is captured — and what designers owe people once they've got it.</p>
+</div>
+<footer>
+<p class="footer-label">Let's work together</p>
+<h2 class="footer-h2">Let's build work that answers to people.</h2>
+<p class="footer-sub">The world we owe each other isn't going to design itself.</p>
+<a href="mailto:tara.taarini2307@gmail.com" class="footer-email"><i class="ti ti-mail"></i> tara.taarini2307@gmail.com</a>
+<div class="footer-bottom"><span>© Taarini Das 2026</span><span>Boston, MA</span></div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MONUM, City of Boston — Taarini Das</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--pad:clamp(20px,4vw,64px);}
+html{scroll-behavior:smooth;}
+body{background:#F9F5F0;font-family:'DM Sans',sans-serif;color:#2C2C2C;-webkit-font-smoothing:antialiased;}
+nav{background:#F9F5F0;border-bottom:0.5px solid #E8E0D6;position:sticky;top:0;z-index:100;}
+.nav-inner{padding:20px var(--pad);display:flex;justify-content:space-between;align-items:center;}
+.nav-logo{font-family:'Lora',serif;font-size:17px;font-weight:600;color:#2C2C2C;text-decoration:none;}
+.nav-links{display:flex;gap:36px;list-style:none;}
+.nav-links a{font-size:12px;letter-spacing:0.8px;text-transform:uppercase;color:#8B7355;text-decoration:none;}
+.nav-links a.active{color:#2C2C2C;border-bottom:1.5px solid #6B2737;padding-bottom:2px;}
+.nav-toggle{display:none;background:none;border:none;cursor:pointer;font-size:22px;color:#2C2C2C;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#8B7355;text-decoration:none;padding:24px var(--pad) 0;}
+.header{background:#2C2C2C;padding:40px var(--pad) 64px;}
+.eyebrow{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#D99E61;margin-bottom:20px;}
+.h-title{font-family:'Lora',serif;font-weight:500;font-size:clamp(36px,5vw,56px);color:#F9F5F0;line-height:1.1;margin-bottom:24px;max-width:800px;}
+.h-hook{font-family:'Lora',serif;font-style:italic;font-size:19px;color:#D3D1C7;max-width:640px;line-height:1.6;}
+.content{padding:64px var(--pad);max-width:900px;}
+.content p{font-size:16px;line-height:1.75;color:#3d3d3a;margin-bottom:20px;}
+.section-title{font-family:'Lora',serif;font-size:26px;font-weight:500;color:#2C2C2C;margin:56px 0 20px;}
+.section-title:first-of-type{margin-top:0;}
+.placeholder-box{border:1.5px dashed #C9BEA8;border-radius:12px;padding:32px;margin:24px 0;background:#F3ECE2;display:flex;align-items:center;gap:16px;}
+.placeholder-box i{font-size:24px;color:#8B7355;flex-shrink:0;}
+.placeholder-box p{margin:0;font-size:14px;font-style:italic;color:#8B7355;}
+.credit-line{font-size:13px;color:#8B7355;margin-top:-8px;margin-bottom:24px;}
+.closing{background:#F3ECE2;padding:56px var(--pad);}
+.closing p{font-family:'Lora',serif;font-style:italic;font-size:20px;line-height:1.7;color:#2C2C2C;max-width:720px;}
+footer{background:#2C2C2C;padding:64px var(--pad) 48px;}
+.footer-label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#8B7355;margin-bottom:18px;}
+.footer-h2{font-family:'Lora',serif;font-size:34px;font-weight:500;color:#F9F5F0;line-height:1.3;margin-bottom:14px;max-width:520px;}
+.footer-sub{font-family:'Lora',serif;font-style:italic;font-size:15px;color:#D9A8B3;margin-bottom:32px;}
+.footer-email{font-size:15px;color:#D99E61;display:flex;align-items:center;gap:8px;text-decoration:none;}
+.footer-bottom{border-top:0.5px solid #3d3d3d;margin-top:48px;padding-top:20px;display:flex;justify-content:space-between;font-size:12px;color:#5a554e;}
+@media (max-width:768px){
+.nav-links{display:none;flex-direction:column;gap:16px;position:absolute;top:58px;left:0;right:0;background:#F9F5F0;padding:24px;border-bottom:0.5px solid #E8E0D6;z-index:99;}
+.nav-links.open{display:flex;}
+.nav-toggle{display:block;}
+.footer-h2{font-size:26px;}
+}
+</style>
+</head>
+<body>
+<nav>
+<div class="nav-inner">
+<a href="index.html" class="nav-logo">TAARINI DAS</a>
+<button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle navigation">&#9776;</button>
+<ul class="nav-links">
+<li><a href="index.html" class="active">Work</a></li>
+<li><a href="craft.html">The day job stuff</a></li>
+<li><a href="about.html">About</a></li>
+<li><a href="mailto:tara.taarini2307@gmail.com">Contact</a></li>
+</ul>
+</div>
+</nav>
+<a href="index.html" class="back-link"><i class="ti ti-arrow-left"></i> Back to work</a>
+<header class="header">
+<p class="eyebrow">Civic innovation · Comms strategy</p>
+<h1 class="h-title">MONUM, City of Boston</h1>
+<p class="h-hook">City governments have a lot to say. Getting residents to actually care is the hard part. That was my job.</p>
+</header>
+<div class="content">
+<p>MONUM — the Mayor's Office of New Urban Mechanics — is Boston's civic innovation team. They design and test new approaches to how the city serves residents, working across departments and with communities to prototype, pilot, and scale solutions that make public systems more accessible, effective, and human-centered. I joined as a Communications and Design Intern.</p>
+
+<h2 class="section-title">The question I kept asking</h2>
+<p>Government has a lot to say, and most of it never actually lands. My job wasn't to make MONUM louder. It was to figure out who a piece of content was actually for, and whether it was reaching them — the same question that shows up in every project I take on.</p>
+
+<h2 class="section-title">The idea that was mine</h2>
+<p>Nobody assigned this one. I noticed Halloween as a moment MONUM could use to show up differently online — something warmer and more human than a typical government account. I pitched it to the team, scouted the locations myself, and shot it.</p>
+<div class="placeholder-box">
+<i class="ti ti-video"></i>
+<p>Add: Halloween video or photos here</p>
+</div>
+
+<h2 class="section-title">The craft that got noticed</h2>
+<p>For MONUM's food waste recovery initiative, the participants and interview format were already set before I joined the project — but the story that made it to air was shaped entirely in the edit. I shot and edited both a short-form and long-form version, going through roughly 45 iterations before it felt right. It's now live on the City of Boston's official YouTube channel and featured on boston.gov's Haymarket Food Recovery page.</p>
+<div class="placeholder-box">
+<i class="ti ti-brand-youtube"></i>
+<p>Add: embed of the boston.gov Haymarket Food Recovery video</p>
+</div>
+
+</div>
+<div class="closing">
+<p>Two different kinds of work — one where the idea was mine from the start, one where the craft made someone else's real work land. Both taught me the same thing: good public communication is never really about the platform. It's about whether the person on the other end feels like the message was actually meant for them.</p>
+</div>
+<footer>
+<p class="footer-label">Let's work together</p>
+<h2 class="footer-h2">Let's build work that answers to people.</h2>
+<p class="footer-sub">The world we owe each other isn't going to design itself.</p>
+<a href="mailto:tara.taarini2307@gmail.com" class="footer-email"><i class="ti ti-mail"></i> tara.taarini2307@gmail.com</a>
+<div class="footer-bottom"><span>© Taarini Das 2026</span><span>Boston, MA</span></div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Day Job Stuff — Taarini Das</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--pad:clamp(20px,4vw,64px);}
+body{background:#F9F5F0;font-family:'DM Sans',sans-serif;color:#2C2C2C;-webkit-font-smoothing:antialiased;}
+nav{background:#F9F5F0;border-bottom:0.5px solid #E8E0D6;position:sticky;top:0;z-index:100;}
+.nav-inner{padding:20px var(--pad);display:flex;justify-content:space-between;align-items:center;}
+.nav-logo{font-family:'Lora',serif;font-size:17px;font-weight:600;color:#2C2C2C;text-decoration:none;}
+.nav-links{display:flex;gap:36px;list-style:none;}
+.nav-links a{font-size:12px;letter-spacing:0.8px;text-transform:uppercase;color:#8B7355;text-decoration:none;}
+.nav-links a.active{color:#2C2C2C;border-bottom:1.5px solid #6B2737;padding-bottom:2px;}
+.nav-toggle{display:none;background:none;border:none;cursor:pointer;font-size:22px;color:#2C2C2C;}
+.header{padding:56px var(--pad) 48px;background:#F3ECE2;}
+.eyebrow{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#6B2737;margin-bottom:16px;font-weight:600;}
+.h-title{font-family:'Lora',serif;font-weight:500;font-size:clamp(30px,4vw,44px);color:#2C2C2C;line-height:1.2;max-width:700px;margin-bottom:16px;}
+.h-sub{font-size:15px;color:#8B7355;max-width:600px;line-height:1.6;}
+.content{padding:56px var(--pad);max-width:900px;}
+.job{margin-bottom:56px;}
+.job-title{font-family:'Lora',serif;font-size:26px;font-weight:500;color:#2C2C2C;margin-bottom:8px;}
+.job-context{font-size:14px;color:#8B7355;margin-bottom:16px;line-height:1.6;max-width:600px;}
+.job-body{font-size:16px;line-height:1.75;color:#3d3d3a;margin-bottom:20px;}
+.placeholder-box{border:1.5px dashed #C9BEA8;border-radius:12px;padding:28px;margin:16px 0;background:#F9F5F0;display:flex;align-items:center;gap:16px;}
+.placeholder-box i{font-size:22px;color:#8B7355;flex-shrink:0;}
+.placeholder-box p{margin:0;font-size:14px;font-style:italic;color:#8B7355;}
+footer{background:#2C2C2C;padding:64px var(--pad) 48px;}
+.footer-label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#8B7355;margin-bottom:18px;}
+.footer-h2{font-family:'Lora',serif;font-size:34px;font-weight:500;color:#F9F5F0;line-height:1.3;margin-bottom:14px;max-width:520px;}
+.footer-sub{font-family:'Lora',serif;font-style:italic;font-size:15px;color:#D9A8B3;margin-bottom:32px;}
+.footer-email{font-size:15px;color:#D99E61;display:flex;align-items:center;gap:8px;text-decoration:none;}
+.footer-bottom{border-top:0.5px solid #3d3d3d;margin-top:48px;padding-top:20px;display:flex;justify-content:space-between;font-size:12px;color:#5a554e;}
+@media (max-width:768px){
+.nav-links{display:none;flex-direction:column;gap:16px;position:absolute;top:58px;left:0;right:0;background:#F9F5F0;padding:24px;border-bottom:0.5px solid #E8E0D6;z-index:99;}
+.nav-links.open{display:flex;}
+.nav-toggle{display:block;}
+.footer-h2{font-size:26px;}
+}
+</style>
+</head>
+<body>
+<nav>
+<div class="nav-inner">
+<a href="index.html" class="nav-logo">TAARINI DAS</a>
+<button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle navigation">&#9776;</button>
+<ul class="nav-links">
+<li><a href="index.html">Work</a></li>
+<li><a href="craft.html" class="active">The day job stuff</a></li>
+<li><a href="about.html">About</a></li>
+<li><a href="mailto:tara.taarini2307@gmail.com">Contact</a></li>
+</ul>
+</div>
+</nav>
+<header class="header">
+<p class="eyebrow">Comms & craft</p>
+<h1 class="h-title">In case "strategist" wasn't the only job title you had in mind.</h1>
+<p class="h-sub">Content, graphic design, and video work for real clients with real constraints — the execution side of the same thinking.</p>
+</header>
+<div class="content">
+
+<div class="job">
+<h2 class="job-title">Massachusetts Department of Energy Resources</h2>
+<p class="job-context">LinkedIn content, concept to publication</p>
+<p class="job-body">I developed and executed LinkedIn content from concept to publication — graphic design, copywriting, and content strategy — translating things like grid reliability, municipal fleet electrification, and a $50 million state funding announcement into content a professional, public-facing audience could actually engage with.</p>
+<div class="placeholder-box"><i class="ti ti-photo"></i><p>Add: DOER LinkedIn post graphics</p></div>
+</div>
+
+<div class="job">
+<h2 class="job-title">Elevate, Inc.</h2>
+<p class="job-context">Public relations & social media</p>
+<p class="job-body">Public relations and social media work for Elevate's clients — event coverage, announcement graphics, and ongoing content built to sound like the client's voice, not an agency's.</p>
+<div class="placeholder-box"><i class="ti ti-photo"></i><p>Add: Elevate content and event coverage</p></div>
+</div>
+
+</div>
+<footer>
+<p class="footer-label">Let's work together</p>
+<h2 class="footer-h2">Let's build work that answers to people.</h2>
+<p class="footer-sub">The world we owe each other isn't going to design itself.</p>
+<a href="mailto:tara.taarini2307@gmail.com" class="footer-email"><i class="ti ti-mail"></i> tara.taarini2307@gmail.com</a>
+<div class="footer-bottom"><span>© Taarini Das 2026</span><span>Boston, MA</span></div>
+</footer>
+</body>
+</html>
