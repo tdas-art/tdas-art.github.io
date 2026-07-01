@@ -30,11 +30,38 @@ nav{background:#F9F5F0;border-bottom:0.5px solid #E8E0D6;position:sticky;top:0;z
 .h-hook{font-family:'Lora',serif;font-style:italic;font-size:20px;color:#D3D1C7;max-width:720px;line-height:1.6;}
 .content{padding:72px var(--pad);max-width:900px;}
 .content p{font-size:17px;line-height:1.75;color:#3d3d3a;margin-bottom:20px;}
-.section-title{font-family:'Lora',serif;font-size:28px;font-weight:500;color:#2C2C2C;margin:48px 0 16px;}
+.section-title{font-family:'Lora',serif;font-size:28px;font-weight:500;color:#2C2C2C;margin:64px 0 20px;}
 .section-title:first-of-type{margin-top:0;}
-.draft-box{border:1.5px dashed #6B2737;border-radius:12px;padding:28px 32px;margin:12px 0 8px;background:#F9F0F2;}
-.draft-tag{display:inline-block;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#6B2737;font-weight:600;background:rgba(107,39,55,0.1);padding:4px 10px;border-radius:20px;margin-bottom:12px;}
-.draft-box p{font-size:14px;font-style:italic;color:#8B7355;margin:0;line-height:1.6;}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:8px 0 32px;}
+.stat-card{background:#F3ECE2;border-radius:12px;padding:24px 18px;}
+.stat-num{font-family:'Lora',serif;font-size:32px;font-weight:600;color:#6B2737;margin-bottom:8px;}
+.stat-label{font-size:12px;color:#8B7355;line-height:1.5;}
+.gap-callout{background:#111111;border-radius:14px;padding:36px 40px;margin:24px 0 32px;display:flex;justify-content:space-around;align-items:center;gap:24px;flex-wrap:wrap;}
+.gap-item{text-align:center;}
+.gap-num{font-family:'Lora',serif;font-size:44px;font-weight:600;color:#F9F5F0;}
+.gap-label{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#D3D1C7;margin-top:6px;}
+.gap-diff{font-family:'Lora',serif;font-style:italic;font-size:15px;color:#D99E61;text-align:center;}
+.quote-block{border-left:3px solid #6B2737;padding:8px 0 8px 24px;margin:24px 0;font-family:'Lora',serif;font-style:italic;font-size:18px;line-height:1.7;color:#5a2f2f;}
+.quote-cite{font-family:'DM Sans',sans-serif;font-style:normal;font-size:13px;color:#8B7355;display:block;margin-top:8px;}
+.framework-row{display:flex;gap:16px;margin:24px 0 32px;flex-wrap:wrap;}
+.framework-chip{background:#F3ECE2;border-radius:10px;padding:14px 20px;flex:1;min-width:180px;}
+.framework-chip strong{display:block;font-size:14px;color:#2C2C2C;margin-bottom:3px;}
+.framework-chip span{font-size:12px;color:#8B7355;}
+.gap-list{margin:24px 0 32px;}
+.gap-list-item{border-bottom:0.5px solid #E8E0D6;padding:20px 0;}
+.gap-list-item:first-child{padding-top:0;}
+.gap-list-item strong{display:block;font-family:'Lora',serif;font-size:18px;color:#2C2C2C;margin-bottom:6px;}
+.gap-list-item span{font-size:15px;color:#5a554e;line-height:1.6;}
+.intervention{margin:48px 0;}
+.intervention-title{font-family:'Lora',serif;font-size:22px;font-weight:500;color:#2C2C2C;margin-bottom:12px;}
+.intervention-body{font-size:16px;line-height:1.75;color:#3d3d3a;margin-bottom:20px;}
+.intervention-img{width:100%;border-radius:14px;border:1px solid #E8E0D6;display:block;}
+.policy-box{background:#F3ECE2;border-radius:14px;padding:36px 40px;margin:48px 0;}
+.policy-box .intervention-title{margin-bottom:12px;}
+.limitations-box{background:#111111;border-radius:14px;padding:36px 40px;margin:24px 0;}
+.limitations-box p{color:#D3D1C7;font-size:15px;line-height:1.75;margin-bottom:0;}
+.closing{background:#F3ECE2;padding:64px var(--pad);}
+.closing p{font-family:'Lora',serif;font-style:italic;font-size:22px;line-height:1.7;color:#2C2C2C;max-width:800px;}
 footer{background:#2C2C2C;padding:88px var(--pad) 56px;}
 .footer-label{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#8B7355;margin-bottom:20px;}
 .footer-h2{font-family:'Lora',serif;font-size:46px;font-weight:500;color:#F9F5F0;line-height:1.25;margin-bottom:16px;max-width:680px;}
@@ -45,6 +72,8 @@ footer{background:#2C2C2C;padding:88px var(--pad) 56px;}
 .nav-links{display:none;flex-direction:column;gap:16px;position:absolute;top:58px;left:0;right:0;background:#F9F5F0;padding:24px;border-bottom:0.5px solid #E8E0D6;z-index:99;}
 .nav-links.open{display:flex;}
 .nav-toggle{display:block;}
+.stat-grid{grid-template-columns:1fr 1fr;}
+.gap-callout{flex-direction:column;}
 .footer-h2{font-size:30px;}
 }
 </style>
@@ -73,29 +102,80 @@ footer{background:#2C2C2C;padding:88px var(--pad) 56px;}
 <p class="h-hook">Algorithms are designed to keep you hooked. I spent a year figuring out how to unhook — and what design owes us once we do.</p>
 </header>
 <div class="content">
-<h2 class="section-title">The question</h2>
-<p>I looked at how algorithms are designed to keep us hooked, and how we actually unhook ourselves — not just from the apps, but from the anxiety they leave behind. Awareness of the problem was never the hard part. Everyone already knows their phone is designed to be addictive. The real question was what happens after you know that, and whether design has any responsibility once it does.</p>
 
-<h2 class="section-title">Research approach</h2>
-<div class="draft-box">
-<span class="draft-tag">Needs your input</span>
-<p>Add the specifics here: what methods did you use (interviews, surveys, literature review, autoethnography)? How many people, if any, were involved? What sources or frameworks grounded the research? I don't have these details from our conversation, so I've left this as a placeholder rather than guess.</p>
+<h2 class="section-title">The problem</h2>
+<p>That's not a willpower problem. That's a design problem.</p>
+<div class="stat-grid">
+<div class="stat-card"><div class="stat-num">90%</div><div class="stat-label">of people already know the algorithm shapes their feed</div></div>
+<div class="stat-card"><div class="stat-num">82.7%</div><div class="stat-label">rate their sense of control over it at 3 or below out of 5</div></div>
+<div class="stat-card"><div class="stat-num">34%</div><div class="stat-label">have already changed what they post because of it</div></div>
+<div class="stat-card"><div class="stat-num">54</div><div class="stat-label">survey respondents this research is grounded in</div></div>
+</div>
+<div class="gap-callout">
+<div class="gap-item"><div class="gap-num">4.4/5</div><div class="gap-label">Algorithmic awareness</div></div>
+<div class="gap-diff">a 2.4-point gap</div>
+<div class="gap-item"><div class="gap-num">2.0/5</div><div class="gap-label">Sense of control</div></div>
+</div>
+<p>Knowing a system exists is not the same as having power over it. One respondent put it more plainly than any stat could:</p>
+<div class="quote-block">"I'm hesitant to search certain topics because I'm afraid it'll ruin my algorithm forever."<span class="quote-cite">— Survey respondent</span></div>
+<p>That gap isn't an education problem. It's a design problem, and it needs structural redesign — not another awareness campaign.</p>
+
+<h2 class="section-title">The research</h2>
+<p>I ran 54 surveys and 10 semi-structured interviews, 30–40 minutes each, with participants ranging from casual users to active content creators, aged 18 to 65, across multiple countries and platforms. The questions covered algorithmic awareness, feed satisfaction, posting behavior, emotional well-being, and platform trust.</p>
+<p>I grounded the diagnosis in four frameworks:</p>
+<div class="framework-row">
+<div class="framework-chip"><strong>Zuboff</strong><span>Your attention is the raw material, sold as a prediction product</span></div>
+<div class="framework-chip"><strong>Doctorow</strong><span>Platforms serve users, then advertisers, then themselves</span></div>
+<div class="framework-chip"><strong>Eyal</strong><span>How habit-forming products are deliberately built</span></div>
+<div class="framework-chip"><strong>Lessig</strong><span>Code functions as law — except it's never published or open to appeal</span></div>
 </div>
 
 <h2 class="section-title">What I found</h2>
-<div class="draft-box">
-<span class="draft-tag">Needs your input</span>
-<p>Add your key findings here — the specific insights that moved you from "algorithms are addictive" (already known) to your actual contribution.</p>
+<p>Three specific gaps, not just a vague sense that people feel bad about algorithms:</p>
+<div class="gap-list">
+<div class="gap-list-item"><strong>The Explanation Gap</strong><span>70% of respondents said "why am I seeing this?" was the single feature they wanted most. Platforms don't give it to them.</span></div>
+<div class="gap-list-item"><strong>The Agency Gap</strong><span>52% wanted the ability to directly reset or reshape their feed. Current controls are buried, technical, and slow to show results.</span></div>
+<div class="gap-list-item"><strong>The Emotional Visibility Gap</strong><span>63% said social media affects their mood or mental health. Platforms already track this. They never show it back.</span></div>
 </div>
+<p>None of the existing fixes touch any of this. Banning a platform just moves the behavior elsewhere. Screen-time reminders ask people to resist a system engineered specifically to prevent resistance. And education doesn't help when the awareness is already there — 90% of people already know. The gap was never about knowledge.</p>
 
 <h2 class="section-title">What I designed</h2>
-<div class="draft-box">
-<span class="draft-tag">Needs your input</span>
-<p>Add the concrete design response — what did the thesis actually produce? A framework, a prototype, a set of principles, a written argument?</p>
+<p>Three interventions, prototyped as a standalone concept called social.camera, plus one intervention that doesn't live in an app at all.</p>
+
+<div class="intervention">
+<h3 class="intervention-title">Transparency Layer</h3>
+<p class="intervention-body">Instead of a vague, buried disclaimer, an explanation panel accessible from every post that names the actual signals driving it — you saved 3 posts from this account this week, this topic makes up 34% of your feed — with a real action attached, not just an explanation.</p>
+<img src="thesis-transparency-layer.jpg" alt="Transparency Layer intervention showing a feed post with a 'Why you're seeing this post' panel listing specific signals" class="intervention-img">
+</div>
+
+<div class="intervention">
+<h3 class="intervention-title">Feed Control Center</h3>
+<p class="intervention-body">A control panel reachable in one tap from a profile, not five taps deep in settings. It shows exactly what's currently shaping the feed — interactions, viewing patterns, time spent — lets someone adjust individual topics, and offers a full reset that asks, post by post: do you want to see more of this?</p>
+<img src="thesis-feed-control-center.jpg" alt="Feed Control Center intervention showing the settings flow from profile to topic weighting to feed reset" class="intervention-img">
+</div>
+
+<div class="intervention">
+<h3 class="intervention-title">Well-being Dashboard</h3>
+<p class="intervention-body">Before showing a feed, the app asks how someone's actually feeling and what they want from their time today. Afterward, it surfaces a "feed pattern" report — your feed ran 60% emotionally charged this week — because platforms already have this data about you. They just never show it back.</p>
+<img src="thesis-wellbeing-dashboard.jpg" alt="Well-being Dashboard intervention showing a mood check-in, intention-setting screen, and feed pattern report" class="intervention-img">
+</div>
+
+<div class="policy-box">
+<h3 class="intervention-title">Policy intervention</h3>
+<p class="intervention-body" style="margin-bottom:0;">None of this works if it stays voluntary. Meta lost an estimated $10 billion in revenue the moment Apple gave users one real privacy choice — proof the business model itself resists transparency by default. 78% of respondents said they'd switch platforms if these features existed. The EU has already written two binding laws, GDPR and the DSA, establishing a right to exactly this. The fix isn't just better design. It's making transparency, control, and emotional visibility mandatory conditions of operating at scale.</p>
+</div>
+
+<h2 class="section-title">What this doesn't claim</h2>
+<div class="limitations-box">
+<p>The sample skews toward India, the US, and people already reflective enough about their social media use to sit through a 40-minute interview about it. These interventions redesign the interface — they don't touch the business model underneath it, which is a different, harder problem. Informal testing suggested people responded well, but a structured usability study is still future work. And without policy backing them, they remain proposals, not requirements.</p>
 </div>
 
 <h2 class="section-title">Why it matters</h2>
-<p>This is the other half of the argument I make in my MONUM case study. That project is about getting people to pay attention to something worth their attention. This one is about what happens after attention is captured — and what designers owe people once they've got it.</p>
+<p>This is the other half of an argument that runs through most of my work. MONUM is about getting people to actually pay attention to something worth their attention. This is about what happens after their attention is captured — and what design owes people once it has it.</p>
+
+</div>
+<div class="closing">
+<p>Awareness is not enough. Trust requires design. That gap isn't an accident — it's a design choice, which means it's also a choice that can be changed.</p>
 </div>
 <footer>
 <p class="footer-label">Let's work together</p>
